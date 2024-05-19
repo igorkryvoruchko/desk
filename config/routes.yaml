@@ -3,3 +3,15 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+api:
+    resource: ../src/Controller/
+    prefix: /api/{_locale}
+    type: attribute
+    requirements:
+        _locale: '%locales%'
+
+api_login_check:
+    path: /api/{_locale}/login_check
+    requirements:
+        _locale: '%locales%'
