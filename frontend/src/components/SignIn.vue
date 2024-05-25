@@ -1,7 +1,7 @@
 <template>
   <v-sheet width="400" class="mx-auto mt-9">
     <v-card-actions class="justify-center">
-      <h2>Sign In</h2>
+      <h2>{{ $t("login") }}</h2>
     </v-card-actions>
     <v-form id="demo" @submit.prevent="signIn">
       <p>
@@ -21,7 +21,7 @@
         />
       </p>
       <v-card-actions class="justify-center">
-        <v-btn type="submit">Sign In</v-btn>
+        <v-btn type="submit">{{ $t("login") }}</v-btn>
       </v-card-actions>
     </v-form>
   </v-sheet>

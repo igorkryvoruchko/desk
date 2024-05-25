@@ -27,7 +27,7 @@
         <v-btn v-if="this.user.name" @click="signOutAction" color="#FFFFFF">
           Sign Out
         </v-btn>
-        <v-btn href="/sign-in" v-else color="#FFFFFF">Sign In</v-btn>
+        <v-btn href="/sign-in" v-else color="#FFFFFF">{{ $t('login') }}</v-btn>
       </v-toolbar>
       <router-view />
     </v-main>
@@ -36,7 +36,8 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import {th} from "vuetify/locale";
+import {useI18n} from "vue-i18n";
+
 export default {
   name: "App",
 
@@ -44,6 +45,16 @@ export default {
     language: null,
     languageItems: ["de", "en"],
   }),
+  setup() {
+    const { t } = useI18n({
+      inheritLocale: true,
+      useScope: "local",
+    });
+
+    return {
+      t
+    };
+  },
   computed: {
     ...mapState({
       user: "user",
@@ -54,7 +65,8 @@ export default {
   methods: {
     ...mapActions(["signOutAction", "setLocale"]),
     changeLocale() {
-      this.setLocale(this.language)
+      this.$i18n.locale = this.language;
+      this.setLocale(this.language);
     },
   },
   beforeMount() {
