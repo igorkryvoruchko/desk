@@ -1,14 +1,14 @@
 <template>
   <v-sheet width="400" class="mx-auto mt-9">
     <v-card-actions class="justify-center">
-      <h2>Sign Up</h2>
+      <h2>{{ $t("register") }}</h2>
     </v-card-actions>
     <v-form id="demo" @submit.prevent="signUp">
       <p>
         <v-text-field
           type="name"
           v-model="name"
-          label="Name"
+          :label="$t('name')"
           :error-messages="errorMessages.name"
         />
       </p>
@@ -16,7 +16,7 @@
         <v-text-field
           type="email"
           v-model="email"
-          label="Email"
+          :label="$t('email')"
           :error-messages="errorMessages.email"
         />
       </p>
@@ -24,12 +24,12 @@
         <v-text-field
           type="password"
           v-model="password"
-          label="Password"
+          :label="$t('password')"
           :error-messages="errorMessages.password"
         />
       </p>
       <v-card-actions class="justify-center">
-        <v-btn type="submit">Sign Up</v-btn>
+        <v-btn type="submit">{{ $t("register") }}</v-btn>
       </v-card-actions>
     </v-form>
   </v-sheet>

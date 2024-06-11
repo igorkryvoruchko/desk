@@ -1,3 +1,12 @@
 {
-  "login": "Anmelden"
+  "login": "Anmelden",
+  "register": "Melden Sie sich an",
+  "email": "E-mail",
+  "name":"Vorname",
+  "password": "Passwort",
+  "main": {
+    "title": "Willkommen bei Desc, Ihrer ultimativen Restaurant-Begleiter-App!",
+    "text": "Verabschieden Sie sich von traditionellen Menüs und langen Wartezeiten – Desc revolutioniert Ihr kulinarisches Erlebnis. Durchsuchen Sie digitale Menüs, geben Sie nahtlos Bestellungen auf und zahlen Sie problemlos – alles bequem von Ihrem Smartphone aus. Egal, ob Sie vor Ort speisen oder zum Mitnehmen bestellen, Desc optimiert den Prozess und macht das Essen mühelos und angenehm.\nSteigern Sie noch heute Ihr Restauranterlebnis mit Desc!",
+    "getting_starting": "Erste Schritte"
+  }
 }

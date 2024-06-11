@@ -16,7 +16,7 @@
         <v-text-field
           type="password"
           v-model="password"
-          label="Password"
+          :label=" $t('password')"
           :error-messages="errorMessages.password"
         />
       </p>

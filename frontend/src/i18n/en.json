@@ -1,3 +1,12 @@
 {
-  "login": "Sign In"
+  "login": "Sign In",
+  "register": "Sign Up",
+  "email": "Email",
+  "name":"Name",
+  "password": "Password",
+  "main": {
+    "title": "Welcome to Desc, your ultimate restaurant companion app!",
+    "text": "Say goodbye to traditional menus and long waiting times—Desc revolutionizes your dining experience. Browse through digital menus, place orders seamlessly, and pay hassle-free, all from the convenience of your smartphone. Whether you're dining in or ordering takeout, Desc streamlines the process, making dining effortless and enjoyable.\nElevate your restaurant experience with Desc today!",
+    "getting_starting": "Getting starting"
+  }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Home msg="Welcome to Desc, your ultimate restaurant companion app!" />
+    <Home :msg="$t('main.title')" />
   </div>
 </template>
 

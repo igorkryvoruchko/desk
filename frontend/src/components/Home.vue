@@ -2,23 +2,18 @@
   <div class="home">
     <h1>{{ msg }}</h1>
     <p>
-      Say goodbye to traditional menus and long waiting times—Desc
-      revolutionizes your dining experience. Browse through digital menus, place
-      orders seamlessly, and pay hassle-free, all from the convenience of your
-      smartphone. Whether you're dining in or ordering takeout, Desc streamlines
-      the process, making dining effortless and enjoyable. <br />
-      Elevate your restaurant experience with Desc today!
+      {{ $t("main.text") }}
     </p>
-    <h3>Getting starting</h3>
+    <h3>{{ $t("main.getting_starting") }}</h3>
     <ul>
       <li>
         <nav>
-          <router-link to="/sign-in">Sign In</router-link>
+          <router-link to="/sign-in">{{ $t("login") }}</router-link>
         </nav>
       </li>
       <li>
         <nav>
-          <router-link to="/sign-up">Sign Up</router-link>
+          <router-link to="/sign-up">{{ $t("register") }}</router-link>
         </nav>
       </li>
     </ul>
