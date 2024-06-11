@@ -19,13 +19,13 @@
         <v-select
             v-model="language"
             :items="languageItems"
-            label="Language"
+            :label="$t('language')"
             outlined
             @update:model-value="changeLocale"
         ></v-select>
         <h3 class="home-link">{{ this.user.name }}</h3>
         <v-btn v-if="this.user.name" @click="signOutAction" color="#FFFFFF">
-          Sign Out
+          {{ $t("sign_out") }}
         </v-btn>
         <v-btn href="/sign-in" v-else color="#FFFFFF">{{ $t('login') }}</v-btn>
       </v-toolbar>
