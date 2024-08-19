@@ -32,6 +32,7 @@ class BaseController extends AbstractController
         foreach ($form->getErrors() as $error) {
             $errors[] = $error->getMessage();
         }
+
         foreach ($form->all() as $childForm) {
             if ($childForm instanceof FormInterface) {
                 if ($childErrors = $this->getErrorsFromForm($childForm)) {
@@ -39,6 +40,7 @@ class BaseController extends AbstractController
                 }
             }
         }
+
         return $errors;
     }
 }
