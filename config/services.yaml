@@ -21,6 +21,9 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\EventListener\NotFoundExceptionListener:
+        tags: [kernel.event_listener]
+
     app.listener.authentication_success_response:
         class: App\EventListener\AuthenticationSuccessListener
         tags:
