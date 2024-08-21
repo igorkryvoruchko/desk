@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 #[Route('/company')]
 class CompanyController extends BaseController
 {
+
     #[Route(name: 'create_company', methods: ['POST'])]
     public function create(
         Request $request,
