@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class NotFoundExceptionListener
@@ -17,7 +18,8 @@ class NotFoundExceptionListener
     public function __invoke(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
-        if ($exception->getStatusCode() == 404) {
+
+        if (get_class($exception) == NotFoundHttpException::class) {
             $message = [
                 'data' => [],
                 'errors' => [

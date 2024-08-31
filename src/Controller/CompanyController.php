@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Company;
 use App\Form\CompanyType;
+use App\Service\CompanyService;
+use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,10 +16,15 @@ use Doctrine\ORM\EntityManagerInterface;
 class CompanyController extends BaseController
 {
 
+    public function __construct(
+        public CompanyService $companyService
+    )
+    {
+    }
+
     #[Route(name: 'create_company', methods: ['POST'])]
     public function create(
         Request $request,
-        EntityManagerInterface $entityManager,
     ): JsonResponse
     {
         $company = new Company();
@@ -25,9 +33,7 @@ class CompanyController extends BaseController
 
         if ($form->isValid()) {
             $company = $form->getData();
-            $entityManager->persist($company);
-            $company->mergeNewTranslations();
-            $entityManager->flush();
+            $this->companyService->create($company);
 
             return $this->response(data: $company, context: ['view']);
         }
@@ -35,20 +41,23 @@ class CompanyController extends BaseController
         return $this->response(errors: $this->getErrorsFromForm($form), status: 401);
     }
 
+    /**
+     * @throws OptimisticLockException
+     * @throws ORMException
+     */
     #[Route('/{id}', name: 'update_company', methods: ['PATCH'])]
     public function update(
         Company $company,
-        Request $request,
-        EntityManagerInterface $entityManager
-    )
+        Request $request
+    ): JsonResponse
     {
+        $oldTranslations = clone $company->getTranslations();
         $form = $this->createForm(CompanyType::class, $company, ['method' => 'PUT']);
         $form->submit(json_decode($request->getContent(), true), false);
 
         if ($form->isValid()) {
             $company = $form->getData();
-            $company->mergeNewTranslations();
-            $entityManager->flush();
+            $this->companyService->update($company, $oldTranslations);
 
             return $this->response(data: $company, context: ['view']);
         }
@@ -59,7 +68,7 @@ class CompanyController extends BaseController
     #[Route(name: 'show_all_company', methods: ['GET'])]
     public function showAll(
         EntityManagerInterface $entityManager
-    )
+    ): JsonResponse
     {
         $companies = $entityManager->getRepository(Company::class)->findAll();
 
@@ -78,7 +87,7 @@ class CompanyController extends BaseController
     public function delete(
         Company $company,
         EntityManagerInterface $entityManager
-    )
+    ): JsonResponse
     {
         $entityManager->remove($company);
         $entityManager->flush();
