@@ -7,6 +7,7 @@ use App\Form\CompanyType;
 use App\Service\CompanyService;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -67,12 +68,21 @@ class CompanyController extends BaseController
 
     #[Route(name: 'show_all_company', methods: ['GET'])]
     public function showAll(
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        Request $request
     ): JsonResponse
     {
-        $companies = $entityManager->getRepository(Company::class)->findAll();
+        $dql = $entityManager->getRepository(Company::class)->getQueryForAllCompanies();
 
-        return $this->response(data: $companies, context: ['view']);
+        $page = $request->get('page', 1);
+        $limit = $request->get('limit', self::PAGE_LIMIT);
+        $query = $entityManager->createQuery($dql)
+            ->setFirstResult($limit * ($page - 1))
+            ->setMaxResults($limit);
+
+        $collection = new Paginator($query, fetchJoinCollection: true);
+
+        return $this->response(data: $collection, pagination: $this->getPaginationTemplate($collection, $page, $limit), context: ['view']);
     }
 
     #[Route('/{id}', name: 'show_one_company', methods: ['GET'])]

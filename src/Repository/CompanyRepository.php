@@ -21,6 +21,12 @@ class CompanyRepository extends ServiceEntityRepository
         parent::__construct($registry, Company::class);
     }
 
+    public function getQueryForAllCompanies()
+    {
+        return $this->createQueryBuilder('c')
+            ->getQuery()->getDQL();
+    }
+
 //    /**
 //     * @return Company[] Returns an array of Company objects
 //     */
