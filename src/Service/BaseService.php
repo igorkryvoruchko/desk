@@ -7,12 +7,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
-
+use Symfony\Component\Serializer\SerializerInterface;
 class BaseService
 {
 
     public function __construct(
-        protected EntityManagerInterface $entityManager
+        protected EntityManagerInterface $entityManager,
+        protected SerializerInterface $serializer
     )
     {
     }
@@ -30,9 +31,8 @@ class BaseService
      */
     public function update(TranslatableInterface $entity, Collection $oldTranslations): void
     {
-        $translations = $entity->getTranslations();
-        $this->deleteTranslations(
-            $translations,
+        $entity = $this->deleteTranslations(
+            $entity,
             $oldTranslations
         );
 
@@ -46,15 +46,19 @@ class BaseService
      * @throws OptimisticLockException
      * @throws ORMException
      */
-    protected function deleteTranslations(Collection $translations, Collection $oldTranslations): void
+    protected function deleteTranslations(TranslatableInterface $entity, Collection $oldTranslations): TranslatableInterface
     {
+        $translations = $entity->getTranslations();
+
         foreach ($oldTranslations as $oldTranslation) {
             foreach ($translations as $translation) {
-                if ($translation->getId() == null && $translation->getLocale() == $oldTranslation->getLocale()) {
+                if ($translation->getLocale() == $oldTranslation->getLocale()) {
                     $this->entityManager->remove($oldTranslation);
                     $this->entityManager->flush($oldTranslation);
                 }
             }
         }
+
+        return $entity;
     }
 }

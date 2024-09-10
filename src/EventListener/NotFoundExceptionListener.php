@@ -22,6 +22,7 @@ class NotFoundExceptionListener
         if (get_class($exception) == NotFoundHttpException::class) {
             $message = [
                 'data' => [],
+                'pagination' => [],
                 'errors' => [
                     $this->translator->trans('not-found-exception')
                 ]
@@ -29,6 +30,7 @@ class NotFoundExceptionListener
         } else {
             $message = [
                 'data' => [],
+                'pagination' => [],
                 'errors' => [
                     $exception->getMessage()
                 ]

@@ -5,8 +5,6 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     locales: de|en
-    doctrine_behaviors_translatable_fetch_mode: "EAGER"
-    doctrine_behaviors_translation_fetch_mode: "EAGER"
 
 services:
     # default configuration for services in *this* file
@@ -39,6 +37,6 @@ services:
 
     app.service.base:
         class: App\Service\BaseService
-        arguments: [ "@doctrine.orm.entity_manager" ]
+        arguments: [ "@doctrine.orm.entity_manager", "@serializer" ]
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
