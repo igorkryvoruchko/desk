@@ -3,15 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\RestaurantRepository;
+use App\Trait\TranslatableDirectionTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
-use Knp\DoctrineBehaviors\Model\Translatable\TranslatableTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: RestaurantRepository::class)]
 class Restaurant implements TranslatableInterface
 {
-    use TranslatableTrait;
+    use TranslatableDirectionTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

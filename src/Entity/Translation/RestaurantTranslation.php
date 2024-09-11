@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Translation;
 
+use App\Trait\TranslationDirectionTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Contract\Entity\TranslationInterface;
-use Knp\DoctrineBehaviors\Model\Translatable\TranslationTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Attribute\SerializedPath;
 
 #[ORM\Entity]
 class RestaurantTranslation implements TranslationInterface
 {
-    use TranslationTrait;
+    use TranslationDirectionTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

@@ -3,17 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\CompanyRepository;
+use App\Trait\TranslatableDirectionTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
-use Knp\DoctrineBehaviors\Model\Translatable\TranslatableTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
 class Company implements TranslatableInterface
 {
-    use TranslatableTrait;
+    use TranslatableDirectionTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
