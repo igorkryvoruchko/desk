@@ -22,7 +22,7 @@ class AuthSignUpType extends AbstractType
             ->add('name', TextType::class, [
                 'constraints' => [
                     new NotBlank()
-                ]
+                ],
             ])
             ->add('email', EmailType::class, [
                 'constraints' => [
