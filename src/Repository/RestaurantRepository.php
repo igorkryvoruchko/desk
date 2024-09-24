@@ -21,7 +21,7 @@ class RestaurantRepository extends ServiceEntityRepository
         parent::__construct($registry, Restaurant::class);
     }
 
-    public function getQueryForAllRestaurant()
+    public function getQueryForAllRestaurant(): ?string
     {
         return $this->createQueryBuilder('r')
             ->getQuery()->getDQL();

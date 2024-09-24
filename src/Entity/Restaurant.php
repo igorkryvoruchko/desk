@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\RestaurantRepository;
 use App\Trait\TranslatableDirectionTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -37,6 +39,17 @@ class Restaurant implements TranslatableInterface
     #[Groups(['view'])]
     #[ORM\Column(length: 255)]
     private ?string $type = null;
+
+    /**
+     * @var Collection<int, Zone>
+     */
+    #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: Zone::class)]
+    private Collection $zones;
+
+    public function __construct()
+    {
+        $this->zones = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -87,6 +100,36 @@ class Restaurant implements TranslatableInterface
     public function setType(string $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Zone>
+     */
+    public function getZones(): Collection
+    {
+        return $this->zones;
+    }
+
+    public function addZone(Zone $zone): static
+    {
+        if (!$this->zones->contains($zone)) {
+            $this->zones->add($zone);
+            $zone->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeZone(Zone $zone): static
+    {
+        if ($this->zones->removeElement($zone)) {
+            // set the owning side to null (unless already changed)
+            if ($zone->getRestaurant() === $this) {
+                $zone->setRestaurant(null);
+            }
+        }
 
         return $this;
     }
