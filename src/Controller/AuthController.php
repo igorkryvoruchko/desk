@@ -56,7 +56,6 @@ class AuthController extends BaseController
         JWTTokenManagerInterface    $JWTManager
     ): JsonResponse
     {
-
         $user = new User();
         $form = $this->createForm(AuthSignUpType::class, $user);
         $form->submit(json_decode($request->getContent(), true));
@@ -68,6 +67,8 @@ class AuthController extends BaseController
                 $user->getPassword()
             );
             $user->setPassword($hashedPassword);
+            $user->setLocale($request->getLocale());
+            $user->setRating(10);
             $entityManager->persist($user);
             $entityManager->flush();
 

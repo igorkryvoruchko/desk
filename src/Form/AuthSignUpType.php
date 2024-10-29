@@ -34,6 +34,7 @@ class AuthSignUpType extends AbstractType
                     new Length(min: 5),
                 ]
             ])
+            ->add('location', TextType::class)
         ;
     }
 

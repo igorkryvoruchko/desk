@@ -52,7 +52,7 @@ class ZoneController extends BaseController
         $form = $this->createForm(ZoneType::class, $zone);
         $form->submit(json_decode($request->getContent(), true));
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $zone = $form->getData();
             $this->zoneService->create($zone);
 
