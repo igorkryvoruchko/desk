@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\ZoneRepository;
 use App\Trait\TranslatableDirectionTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -31,6 +33,17 @@ class Zone implements TranslatableInterface
     #[Groups(['view'])]
     protected $translations;
 
+    /**
+     * @var Collection<int, Table>
+     */
+    #[ORM\OneToMany(mappedBy: 'zone', targetEntity: Table::class, orphanRemoval: true)]
+    private Collection $tables;
+
+    public function __construct()
+    {
+        $this->tables = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -56,6 +69,36 @@ class Zone implements TranslatableInterface
     public function setRestaurant(?Restaurant $restaurant): static
     {
         $this->restaurant = $restaurant;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Table>
+     */
+    public function getTables(): Collection
+    {
+        return $this->tables;
+    }
+
+    public function addTable(Table $table): static
+    {
+        if (!$this->tables->contains($table)) {
+            $this->tables->add($table);
+            $table->setZone($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTable(Table $table): static
+    {
+        if ($this->tables->removeElement($table)) {
+            // set the owning side to null (unless already changed)
+            if ($table->getZone() === $this) {
+                $table->setZone(null);
+            }
+        }
 
         return $this;
     }
