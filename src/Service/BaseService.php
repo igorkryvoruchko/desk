@@ -18,17 +18,14 @@ class BaseService
     {
     }
 
-    public function create($entity): void
+    public function create(TranslatableInterface $entity): void
     {
         $this->entityManager->persist($entity);
         $entity->mergeNewTranslations();
         $this->entityManager->flush();
     }
 
-    /**
-     * @throws OptimisticLockException
-     * @throws ORMException
-     */
+    
     public function update(TranslatableInterface $entity, Collection $oldTranslations): void
     {
         $entity = $this->deleteTranslations(

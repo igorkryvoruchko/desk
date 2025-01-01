@@ -21,6 +21,12 @@ class TableRepository extends ServiceEntityRepository
         parent::__construct($registry, Table::class);
     }
 
+    public function getQueryForAllTables(): ?string
+    {
+        return $this->createQueryBuilder('t')
+            ->getQuery()->getDQL();
+    }
+
 //    /**
 //     * @return Table[] Returns an array of Table objects
 //     */

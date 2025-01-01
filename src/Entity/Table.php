@@ -5,23 +5,27 @@ namespace App\Entity;
 use App\Repository\TableRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TableRepository::class)]
 #[ORM\Table(name: '`table`')]
 class Table
 {
+    #[Groups(['view'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
+    #[Groups(['view'])]
     #[ORM\ManyToOne(inversedBy: 'tables')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Zone $zone = null;
 
+    #[Groups(['view'])]
     #[ORM\Column]
     private ?int $number = null;
 
+    #[Groups(['view'])]
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $seatsCount = null;
 
