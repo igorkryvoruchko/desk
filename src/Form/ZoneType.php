@@ -24,6 +24,9 @@ class ZoneType extends AbstractType
             ])
             ->add('restaurant', EntityType::class, [
                 'class' => Restaurant::class,
+                'constraints' => [
+                    new NotBlank()
+                ]
             ])
             ->add('translations', CollectionType::class, [
                 'entry_type' => ZoneTranslationType::class,
