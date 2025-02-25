@@ -20,7 +20,7 @@ class Company implements TranslatableInterface
     #[Groups(['view'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     #[Groups(['view'])]
     private ?string $alias = null;
 
