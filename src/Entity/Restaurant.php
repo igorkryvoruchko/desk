@@ -46,9 +46,16 @@ class Restaurant implements TranslatableInterface
     #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: Zone::class)]
     private Collection $zones;
 
+    /**
+     * @var Collection<int, TypeMenu>
+     */
+    #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: KindMenu::class)]
+    private Collection $kindMenus;
+
     public function __construct()
     {
         $this->zones = new ArrayCollection();
+        $this->kindMenus = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -128,6 +135,36 @@ class Restaurant implements TranslatableInterface
             // set the owning side to null (unless already changed)
             if ($zone->getRestaurant() === $this) {
                 $zone->setRestaurant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TypeMenu>
+     */
+    public function getKindMenus(): Collection
+    {
+        return $this->kindMenus;
+    }
+
+    public function addKindMenu(KindMenu $kindMenu): static
+    {
+        if (!$this->kindMenus->contains($kindMenu)) {
+            $this->kindMenus->add($kindMenu);
+            $kindMenu->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeKindMenu(KindMenu $kindMenu): static
+    {
+        if ($this->kindMenus->removeElement($kindMenu)) {
+            // set the owning side to null (unless already changed)
+            if ($kindMenu->getRestaurant() === $this) {
+                $kindMenu->setRestaurant(null);
             }
         }
 
