@@ -34,12 +34,12 @@ class Table
     /**
      * @var Collection<int, Order>
      */
-    #[ORM\OneToMany(mappedBy: 'tableId', targetEntity: Order::class)]
-    private Collection $orders;
+    #[ORM\OneToMany(mappedBy: 'orderedTable', targetEntity: Order::class)]
+    private Collection $ordes;
 
     public function __construct()
     {
-        $this->orders = new ArrayCollection();
+        $this->ordes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -86,27 +86,27 @@ class Table
     /**
      * @return Collection<int, Order>
      */
-    public function getOrders(): Collection
+    public function getOrdes(): Collection
     {
-        return $this->orders;
+        return $this->ordes;
     }
 
-    public function addOrder(Order $order): static
+    public function addOrde(Order $orde): static
     {
-        if (!$this->orders->contains($order)) {
-            $this->orders->add($order);
-            $order->setTableId($this);
+        if (!$this->ordes->contains($orde)) {
+            $this->ordes->add($orde);
+            $orde->setOrderedTable($this);
         }
 
         return $this;
     }
 
-    public function removeOrder(Order $order): static
+    public function removeOrde(Order $orde): static
     {
-        if ($this->orders->removeElement($order)) {
+        if ($this->ordes->removeElement($orde)) {
             // set the owning side to null (unless already changed)
-            if ($order->getTableId() === $this) {
-                $order->setTableId(null);
+            if ($orde->getOrderedTable() === $this) {
+                $orde->setOrderedTable(null);
             }
         }
 
