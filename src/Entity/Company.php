@@ -37,9 +37,16 @@ class Company implements TranslatableInterface
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Restaurant::class)]
     private Collection $restaurants;
 
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class)]
+    private Collection $user;
+
     public function __construct()
     {
         $this->restaurants = new ArrayCollection();
+        $this->user = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -95,6 +102,36 @@ class Company implements TranslatableInterface
             // set the owning side to null (unless already changed)
             if ($restaurant->getCompany() === $this) {
                 $restaurant->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUser(): Collection
+    {
+        return $this->user;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->user->contains($user)) {
+            $this->user->add($user);
+            $user->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->user->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getCompany() === $this) {
+                $user->setCompany(null);
             }
         }
 
