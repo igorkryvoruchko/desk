@@ -3,13 +3,11 @@
 namespace App\DataFixtures;
 
 use App\Entity\Company;
-use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class CompanyFixtures extends Fixture implements FixtureGroupInterface, DependentFixtureInterface
+class CompanyFixtures extends Fixture implements FixtureGroupInterface
 {
     public const COMPANY_REFERENCE = 'company';
 
@@ -32,12 +30,5 @@ class CompanyFixtures extends Fixture implements FixtureGroupInterface, Dependen
     public static function getGroups(): array
     {
         return ['group1'];
-    }
-
-    public function getDependencies(): array
-    {
-        return [
-            UserFixtures::class,
-        ];
     }
 }

@@ -7,8 +7,9 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class UserFixtures extends Fixture implements FixtureGroupInterface
+class UserFixtures extends Fixture implements FixtureGroupInterface, DependentFixtureInterface
 {
     public const ADMIN_USER_REFERENCE = 'admin-user';
 
@@ -31,6 +32,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
         $user->setRating(10);
         $user->setLocation('Potsdam');
         $user->setRoles(['ROLE_ADMIN']);
+        $user->setCompany($this->getReference(CompanyFixtures::COMPANY_REFERENCE));
 
         $manager->persist($user);
         $manager->flush();
@@ -41,5 +43,12 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
     public static function getGroups(): array
     {
         return ['group1'];
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            CompanyFixtures::class,
+        ];
     }
 }
