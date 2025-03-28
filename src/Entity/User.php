@@ -43,10 +43,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $locale = null;
 
-    #[Groups(['view'])]
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $location = null;
-
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $rating = null;
 
@@ -60,6 +56,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'user')]
     #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?Company $company = null;
+
+    #[Groups(['view'])]
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?City $city = null;
 
     public function __construct()
     {
@@ -158,18 +159,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getLocation(): ?string
-    {
-        return $this->location;
-    }
-
-    public function setLocation(?string $location): static
-    {
-        $this->location = $location;
-
-        return $this;
-    }
-
     public function getRating(): ?int
     {
         return $this->rating;
@@ -220,6 +209,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCompany(?Company $company): static
     {
         $this->company = $company;
+
+        return $this;
+    }
+
+    public function getCity(): ?City
+    {
+        return $this->city;
+    }
+
+    public function setCity(?City $city): static
+    {
+        $this->city = $city;
 
         return $this;
     }

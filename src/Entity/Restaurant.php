@@ -52,6 +52,13 @@ class Restaurant implements TranslatableInterface
     #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: KindMenu::class)]
     private Collection $kindMenus;
 
+    #[ORM\ManyToOne(inversedBy: 'restaurants')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?City $city = null;
+
+    #[ORM\Column]
+    private ?int $postalCode = null;
+
     public function __construct()
     {
         $this->zones = new ArrayCollection();
@@ -167,6 +174,30 @@ class Restaurant implements TranslatableInterface
                 $kindMenu->setRestaurant(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCity(): ?City
+    {
+        return $this->city;
+    }
+
+    public function setCity(?City $city): static
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getPostalCode(): ?int
+    {
+        return $this->postalCode;
+    }
+
+    public function setPostalCode(int $postalCode): static
+    {
+        $this->postalCode = $postalCode;
 
         return $this;
     }

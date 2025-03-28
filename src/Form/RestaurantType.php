@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\City;
 use App\Entity\Company;
 use App\Entity\Restaurant;
 use Symfony\Component\Form\AbstractType;
@@ -11,8 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class RestaurantType extends AbstractType
 {
@@ -27,7 +27,11 @@ class RestaurantType extends AbstractType
             ->add('company', EntityType::class, [
                 'class' => Company::class,
             ])
+            ->add('city', EntityType::class, [
+                'class' => City::class,
+            ])
             ->add('address', TextType::class)
+            ->add('postalCode', IntegerType::class)
             ->add('type', TextType::class)
             ->add('translations', CollectionType::class, [
                 'entry_type' => RestaurantTranslationType::class,

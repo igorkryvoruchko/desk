@@ -19,8 +19,10 @@ class RestaurantFixtures extends Fixture implements FixtureGroupInterface, Depen
         $restaurant = new Restaurant();
         $restaurant->setCompany($this->getReference(CompanyFixtures::COMPANY_REFERENCE, Company::class));
         $restaurant->setAlias('potsdam_best_burger');
-        $restaurant->setAddress('Potsdam, Germany');
+        $restaurant->setCity($this->getReference('city_potsdam'));
+        $restaurant->setAddress('Grossbeerenstr. 1'); 
         $restaurant->setType('Fast Food');
+        $restaurant->setPostalCode('14467');
         $restaurant->translate('en')->setName('Best Burgers Potsdam');
         $restaurant->translate('de')->setName('Am besten Burgers Potsdam');
         $restaurant->translate('en')->setDescription('The best burgers in Potsdam');
@@ -42,6 +44,7 @@ class RestaurantFixtures extends Fixture implements FixtureGroupInterface, Depen
     {
         return [
             CompanyFixtures::class,
+            CityFixtures::class,
         ];
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\City;
 use App\Entity\User;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -34,6 +36,9 @@ class AuthSignUpType extends AbstractType
                 ]
             ])
             ->add('location', TextType::class)
+            ->add('city', EntityType::class, [
+                'class' => City::class,
+            ])
         ;
     }
 
