@@ -39,9 +39,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[Groups(['view'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $locale = null;
 
+    #[Groups(['view'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $location = null;
 
@@ -54,7 +56,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Order::class)]
     private Collection $orders;
 
+    #[Groups(['view'])]
     #[ORM\ManyToOne(inversedBy: 'user')]
+    #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?Company $company = null;
 
     public function __construct()

@@ -54,7 +54,7 @@ class CompanyController extends BaseController
 
         if ($form->isValid()) {
             $company = $form->getData();
-            $this->companyService->create($company);
+            $company = $this->companyService->createCompany($company, $this->getUser());
 
             return $this->response(data: $company, context: ['view']);
         }
