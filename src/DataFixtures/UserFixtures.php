@@ -30,7 +30,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface, DependentFi
         $user->setPassword($password);
         $user->setLocale('en');
         $user->setRating(10);
-        $user->setLocation('Potsdam');
+        $user->setCity($this->getReference('city_potsdam'));
         $user->setRoles(['ROLE_ADMIN']);
         $user->setCompany($this->getReference(CompanyFixtures::COMPANY_REFERENCE));
 
@@ -49,6 +49,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface, DependentFi
     {
         return [
             CompanyFixtures::class,
+            CityFixtures::class,
         ];
     }
 }
