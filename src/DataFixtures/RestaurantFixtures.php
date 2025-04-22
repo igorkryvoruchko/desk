@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\City;
 use App\Entity\Company;
 use App\Entity\Restaurant;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -13,13 +14,15 @@ class RestaurantFixtures extends Fixture implements FixtureGroupInterface, Depen
 {
     public const RESTAURANT_REFERENCE = 'restaurant';
 
+    public const RESTAURANT_ALIAS = 'potsdam_best_burger';
+
 
     public function load(ObjectManager $manager): void
     {
         $restaurant = new Restaurant();
         $restaurant->setCompany($this->getReference(CompanyFixtures::COMPANY_REFERENCE, Company::class));
-        $restaurant->setAlias('potsdam_best_burger');
-        $restaurant->setCity($this->getReference('city_potsdam'));
+        $restaurant->setAlias(self::RESTAURANT_ALIAS);
+        $restaurant->setCity($this->getReference('city_potsdam', City::class));
         $restaurant->setAddress('Grossbeerenstr. 1'); 
         $restaurant->setType('Fast Food');
         $restaurant->setPostalCode('14467');

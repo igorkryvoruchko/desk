@@ -43,13 +43,13 @@ class Restaurant implements TranslatableInterface
     /**
      * @var Collection<int, Zone>
      */
-    #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: Zone::class)]
+    #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: Zone::class, cascade: ['persist', 'remove'])]
     private Collection $zones;
 
     /**
      * @var Collection<int, TypeMenu>
      */
-    #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: KindMenu::class)]
+    #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: KindMenu::class, cascade: ['persist', 'remove'])]
     private Collection $kindMenus;
 
     #[ORM\ManyToOne(inversedBy: 'restaurants')]

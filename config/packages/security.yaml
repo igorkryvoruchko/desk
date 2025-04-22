@@ -44,6 +44,7 @@ security:
     access_control:
         - { path: ^/api/(%locales%)/signin, roles: PUBLIC_ACCESS }
         - { path: ^/api/(%locales%)/signup, roles: PUBLIC_ACCESS }
+        - { path: ^/api/(%locales%)/city, roles: PUBLIC_ACCESS }
         - { path: ^/api/doc, roles: PUBLIC_ACCESS }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
 

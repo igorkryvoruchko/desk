@@ -57,7 +57,7 @@ class MenuItem implements TranslatableInterface
     /**
      * @var Collection<int, Order>
      */
-    #[ORM\ManyToMany(targetEntity: Order::class, mappedBy: 'manuItem')]
+    #[ORM\ManyToMany(targetEntity: Order::class, mappedBy: 'menuItem', cascade: ['persist', 'remove'])]
     private Collection $orders;
 
     public function __construct()
@@ -154,7 +154,7 @@ class MenuItem implements TranslatableInterface
     {
         if (!$this->orders->contains($order)) {
             $this->orders->add($order);
-            $order->addManuItem($this);
+            $order->addMenuItem($this);
         }
 
         return $this;
@@ -163,7 +163,7 @@ class MenuItem implements TranslatableInterface
     public function removeOrder(Order $order): static
     {
         if ($this->orders->removeElement($order)) {
-            $order->removeManuItem($this);
+            $order->removeMenuItem($this);
         }
 
         return $this;

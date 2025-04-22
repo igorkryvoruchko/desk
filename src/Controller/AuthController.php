@@ -12,9 +12,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Nelmio\ApiDocBundle\Annotation\Security;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
+use Symfony\Component\HttpFoundation\Response;
 
 #[OA\Tag(name: 'Auth')]
 class AuthController extends BaseController
@@ -32,7 +32,7 @@ class AuthController extends BaseController
         )
     )]
     #[OA\Response(
-        response: 200,
+        response: 201,
         description: 'Register new users',
         content: new OA\JsonContent(
             type: 'array',
@@ -75,7 +75,7 @@ class AuthController extends BaseController
             return $this->response(data: [
                 'user' => $user,
                 'token' => $JWTManager->create($user)
-            ], context: ['view']);
+            ], context: ['view'], status: Response::HTTP_CREATED);
         }
 
         return $this->response(errors: $this->getErrorsFromForm($form), status: 401);

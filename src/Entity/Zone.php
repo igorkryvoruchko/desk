@@ -36,7 +36,7 @@ class Zone implements TranslatableInterface
     /**
      * @var Collection<int, Table>
      */
-    #[ORM\OneToMany(mappedBy: 'zone', targetEntity: Table::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'zone', targetEntity: Table::class, cascade: ['persist', 'remove'])]
     private Collection $tables;
 
     public function __construct()

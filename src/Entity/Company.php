@@ -34,7 +34,7 @@ class Company implements TranslatableInterface
     /**
      * @var Collection<int, Restaurant>
      */
-    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Restaurant::class)]
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Restaurant::class, cascade: ['persist', 'remove'])]
     private Collection $restaurants;
 
     /**

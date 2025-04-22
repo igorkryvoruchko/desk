@@ -2,13 +2,10 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\KindMenu;
 use App\Entity\MenuItem;
 use App\Entity\Order;
-use App\Entity\Restaurant;
 use App\Entity\Table;
 use App\Entity\User;
-use App\Entity\Zone;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -17,7 +14,6 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 class OrderFixtures extends Fixture implements FixtureGroupInterface, DependentFixtureInterface
 {
     public const ORDER_REFERENCE = 'order';
-
 
     public function load(ObjectManager $manager): void
     {

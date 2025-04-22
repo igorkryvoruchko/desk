@@ -14,12 +14,14 @@ class TableFixtures extends Fixture implements FixtureGroupInterface, DependentF
 {
     public const TABLE_REFERENCE = 'table';
 
+    public const TABLE_NUMBER = 1;
+
 
     public function load(ObjectManager $manager): void
     {
         $table = new Table();
         $table->setZone($this->getReference(ZoneFixtures::ZONE_REFERENCE, Zone::class));
-        $table->setNumber(1);
+        $table->setNumber(self::TABLE_NUMBER);
         $table->setSeatsCount(4);
         
         $manager->persist($table);

@@ -28,10 +28,21 @@ class BaseService
     
     public function update(TranslatableInterface $entity, Collection $oldTranslations): void
     {
-        $entity = $this->deleteTranslations(
-            $entity,
-            $oldTranslations
-        );
+        // $entity = $this->deleteTranslations(
+        //     $entity,
+        //     $oldTranslations
+        // );
+        $translations = $entity->getTranslations();
+
+        foreach ($oldTranslations as $oldTranslation) {
+            foreach ($translations as $translation) {
+                if ($translation->getLocale() == $oldTranslation->getLocale()) {
+                    $this->entityManager->remove($oldTranslation);
+                }
+            }
+        }
+
+        $this->entityManager->flush();
 
         $this->entityManager->persist($entity);
         $entity->mergeNewTranslations();
