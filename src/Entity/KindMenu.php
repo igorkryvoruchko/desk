@@ -40,7 +40,7 @@ class KindMenu implements TranslatableInterface
     /**
      * @var Collection<int, MenuItem>
      */
-    #[ORM\OneToMany(mappedBy: 'kindMenu', targetEntity: MenuItem::class)]
+    #[ORM\OneToMany(mappedBy: 'kindMenu', targetEntity: MenuItem::class, cascade: ['persist', 'remove'])]
     private Collection $menuItems;
 
     public function __construct()

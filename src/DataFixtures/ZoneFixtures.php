@@ -13,11 +13,13 @@ class ZoneFixtures extends Fixture implements FixtureGroupInterface, DependentFi
 {
     public const ZONE_REFERENCE = 'zone';
 
+    public const ZONE_ALIAS = 'inside';
+
 
     public function load(ObjectManager $manager): void
     {
         $zone = new Zone();
-        $zone->setAlias('inside');
+        $zone->setAlias(self::ZONE_ALIAS);
         $zone->setRestaurant($this->getReference(RestaurantFixtures::RESTAURANT_REFERENCE, Restaurant::class));
         $zone->translate('en')->setName('Inside');
         $zone->translate('de')->setName('Innen');

@@ -2,6 +2,8 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\City;
+use App\Entity\Company;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -12,6 +14,10 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 class UserFixtures extends Fixture implements FixtureGroupInterface, DependentFixtureInterface
 {
     public const ADMIN_USER_REFERENCE = 'admin-user';
+
+    public const USER_EMAIL = 'user@example.com';
+
+    public const USER_PASSWORD = 'user1234';
 
     private UserPasswordHasherInterface $hasher;
 
@@ -24,15 +30,15 @@ class UserFixtures extends Fixture implements FixtureGroupInterface, DependentFi
     public function load(ObjectManager $manager): void
     {
         $user = new User();
-        $user->setName('Ihor');
-        $user->setEmail('ihor@gmail.com');
-        $password = $this->hasher->hashPassword($user, 'ihor1234');
+        $user->setName('User');
+        $user->setEmail(self::USER_EMAIL);
+        $password = $this->hasher->hashPassword($user, self::USER_PASSWORD);
         $user->setPassword($password);
         $user->setLocale('en');
         $user->setRating(10);
-        $user->setCity($this->getReference('city_potsdam'));
+        $user->setCity($this->getReference('city_potsdam', City::class));
         $user->setRoles(['ROLE_ADMIN']);
-        $user->setCompany($this->getReference(CompanyFixtures::COMPANY_REFERENCE));
+        $user->setCompany($this->getReference(CompanyFixtures::COMPANY_REFERENCE, Company::class));
 
         $manager->persist($user);
         $manager->flush();

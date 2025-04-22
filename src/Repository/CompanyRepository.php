@@ -42,13 +42,13 @@ class CompanyRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Company
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+   public function findOneByAlias(string $alias): ?Company
+   {
+       return $this->createQueryBuilder('c')
+           ->andWhere('c.alias = :alias')
+           ->setParameter('alias', $alias)
+           ->getQuery()
+           ->getOneOrNullResult()
+       ;
+   }
 }

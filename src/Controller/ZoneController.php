@@ -8,12 +8,13 @@ use App\Service\ZoneService;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Attributes as OA;
+use Symfony\Component\HttpFoundation\Response;
 
 #[Route('/zone')]
 #[OA\Tag(name: 'Zone')]
@@ -30,7 +31,7 @@ class ZoneController extends BaseController
     #[OA\Post(summary: 'Create new Zone')]
     #[OA\RequestBody(required: true, content: new OA\JsonContent(ref: new Model(type: ZoneType::class)))]
     #[OA\Response(
-        response: 200,
+        response: 201,
         description: 'Create new Zone',
         content: new OA\JsonContent(
             type: 'array',
@@ -56,7 +57,7 @@ class ZoneController extends BaseController
             $zone = $form->getData();
             $this->zoneService->create($zone);
 
-            return $this->response(data: $zone, context: ['view']);
+            return $this->response(data: $zone, context: ['view'], status: Response::HTTP_CREATED);
         }
 
         return $this->response(errors: $this->getErrorsFromForm($form), status: 401);
@@ -190,6 +191,6 @@ class ZoneController extends BaseController
         $entityManager->remove($zone);
         $entityManager->flush();
 
-        return $this->response();
+        return $this->response(status: Response::HTTP_NO_CONTENT);
     }
 }

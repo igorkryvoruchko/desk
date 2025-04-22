@@ -8,12 +8,13 @@ use App\Service\OrderService;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Attributes as OA;
+use Symfony\Component\HttpFoundation\Response;
 
 #[Route('/order')]
 #[OA\Tag(name: 'Order')]
@@ -30,7 +31,7 @@ class OrderController extends BaseController
     #[OA\Post(summary: 'Create new Order')]
     #[OA\RequestBody(required: true, content: new OA\JsonContent(ref: new Model(type: OrderType::class)))]
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_CREATED,
         description: 'Create new Order',
         content: new OA\JsonContent(
             type: 'array',
@@ -56,10 +57,10 @@ class OrderController extends BaseController
             $order = $form->getData();
             $this->orderService->saveOrder($order);
 
-            return $this->response(data: $order, context: ['view']);
+            return $this->response(data: $order, context: ['view'], status: Response::HTTP_CREATED);
         }
 
-        return $this->response(errors: $this->getErrorsFromForm($form), status: 401);
+        return $this->response(errors: $this->getErrorsFromForm($form), status: Response::HTTP_UNAUTHORIZED);
     }
 
     /**
@@ -70,7 +71,7 @@ class OrderController extends BaseController
     #[OA\Patch(summary: 'Update existed Order')]
     #[OA\RequestBody(required: true, content: new OA\JsonContent(ref: new Model(type: OrderType::class)))]
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_OK,
         description: 'Update existed Order',
         content: new OA\JsonContent(
             type: 'array',
@@ -99,7 +100,7 @@ class OrderController extends BaseController
             return $this->response(data: $order, context: ['view']);
         }
 
-        return $this->response(errors: $this->getErrorsFromForm($form), status: 401);
+        return $this->response(errors: $this->getErrorsFromForm($form), status: Response::HTTP_UNAUTHORIZED);
     }
 
     #[Route(name: 'show_all_order', methods: ['GET'])]
@@ -108,7 +109,7 @@ class OrderController extends BaseController
         new OA\Parameter(name: 'limit', in: 'query', required: false, schema: new OA\Schema(type: 'int', example: 1))
     ])]
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_OK,
         description: 'Get paginated list of Orders',
         content: new OA\JsonContent(
             type: 'array',
@@ -143,7 +144,7 @@ class OrderController extends BaseController
     #[Route('/{id}', name: 'show_one_order', methods: ['GET'])]
     #[OA\Get(summary: 'Get Order by id')]
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_OK,
         description: 'Get Order by id',
         content: new OA\JsonContent(
             type: 'array',
@@ -167,7 +168,7 @@ class OrderController extends BaseController
     #[Route('/{id}', name: 'delete_order', methods: ['DELETE'])]
     #[OA\Delete(summary: 'Delete Order by id')]
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_NO_CONTENT,
         description: 'Delete Order by id',
         content: new OA\JsonContent(
             type: 'array',
@@ -189,6 +190,6 @@ class OrderController extends BaseController
         $entityManager->remove($order);
         $entityManager->flush();
 
-        return $this->response();
+        return $this->response(status: Response::HTTP_NO_CONTENT);
     }
 }

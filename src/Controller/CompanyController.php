@@ -8,12 +8,13 @@ use App\Service\CompanyService;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Attributes as OA;
+use Symfony\Component\HttpFoundation\Response;
 
 #[Route('/company')]
 #[OA\Tag(name: 'Company')]
@@ -30,7 +31,7 @@ class CompanyController extends BaseController
     #[OA\Post(summary: 'Create new Company')]
     #[OA\RequestBody(required: true, content: new OA\JsonContent(ref: new Model(type: CompanyType::class)))]
     #[OA\Response(
-        response: 200,
+        response: 201,
         description: 'Create new Company',
         content: new OA\JsonContent(
             type: 'array',
@@ -56,7 +57,7 @@ class CompanyController extends BaseController
             $company = $form->getData();
             $company = $this->companyService->createCompany($company, $this->getUser());
 
-            return $this->response(data: $company, context: ['view']);
+            return $this->response(data: $company, context: ['view'], status: Response::HTTP_CREATED);
         }
 
         return $this->response(errors: $this->getErrorsFromForm($form), status: 401);
@@ -190,6 +191,6 @@ class CompanyController extends BaseController
         $entityManager->remove($company);
         $entityManager->flush();
 
-        return $this->response();
+        return $this->response(status: Response::HTTP_NO_CONTENT);
     }
 }

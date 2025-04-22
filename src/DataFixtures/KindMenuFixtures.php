@@ -4,7 +4,6 @@ namespace App\DataFixtures;
 
 use App\Entity\KindMenu;
 use App\Entity\Restaurant;
-use App\Entity\Zone;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -14,11 +13,12 @@ class KindMenuFixtures extends Fixture implements FixtureGroupInterface, Depende
 {
     public const KIND_MENU_REFERENCE = 'kind_menu';
 
+    public const KIND_MENU_ALIAS = 'burgers';
 
     public function load(ObjectManager $manager): void
     {
         $kindMenu = new KindMenu();
-        $kindMenu->setAlias('burgers');
+        $kindMenu->setAlias(self::KIND_MENU_ALIAS);
         $kindMenu->setIsActive(true);
         $kindMenu->setRestaurant($this->getReference(RestaurantFixtures::RESTAURANT_REFERENCE, Restaurant::class));
         $kindMenu->translate('en')->setName('Burgers');

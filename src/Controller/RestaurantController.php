@@ -8,12 +8,13 @@ use App\Service\RestaurantService;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Attributes as OA;
+use Symfony\Component\HttpFoundation\Response;
 
 #[Route('/restaurant')]
 #[OA\Tag(name: 'Restaurant')]
@@ -56,7 +57,7 @@ class RestaurantController extends BaseController
             $restaurant = $form->getData();
             $this->restaurantService->create($restaurant);
 
-            return $this->response(data: $restaurant, context: ['view']);
+            return $this->response(data: $restaurant, context: ['view'], status: Response::HTTP_CREATED);
         }
 
         return $this->response(errors: $this->getErrorsFromForm($form), status: 401);
@@ -190,6 +191,6 @@ class RestaurantController extends BaseController
         $entityManager->remove($restaurant);
         $entityManager->flush();
 
-        return $this->response();
+        return $this->response(status: Response::HTTP_NO_CONTENT);
     }
 }

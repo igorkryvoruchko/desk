@@ -4,8 +4,6 @@ namespace App\DataFixtures;
 
 use App\Entity\KindMenu;
 use App\Entity\MenuItem;
-use App\Entity\Restaurant;
-use App\Entity\Zone;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -15,11 +13,13 @@ class MenuItemFixtures extends Fixture implements FixtureGroupInterface, Depende
 {
     public const MENU_ITEM_REFERENCE = 'menu_item';
 
+    public const MENU_ITEM_ALIAS = 'test_menu_item';
+
 
     public function load(ObjectManager $manager): void
     {
         $menuItem = new MenuItem();
-        $menuItem->setAlias('BigMak');
+        $menuItem->setAlias(self::MENU_ITEM_ALIAS);
         $menuItem->setKindMenu($this->getReference(KindMenuFixtures::KIND_MENU_REFERENCE, KindMenu::class));
         $menuItem->translate('en')->setName('BigMak');
         $menuItem->translate('de')->setName('BigMak');

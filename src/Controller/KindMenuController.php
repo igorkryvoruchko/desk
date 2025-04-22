@@ -3,19 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\KindMenu;
-use App\Entity\Zone;
-use App\Form\ZoneType;
 use App\Form\KindMenuType;
 use App\Service\KindMenuService;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Attributes as OA;
+use Symfony\Component\HttpFoundation\Response;
 
 #[Route('/kind-menu')]
 #[OA\Tag(name: 'KindMenu')]
@@ -32,7 +31,7 @@ class KindMenuController extends BaseController
     #[OA\Post(summary: 'Create new KindMenu')]
     #[OA\RequestBody(required: true, content: new OA\JsonContent(ref: new Model(type: KindMenuType::class)))]
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_CREATED,
         description: 'Create new KindMenu',
         content: new OA\JsonContent(
             type: 'array',
@@ -58,10 +57,10 @@ class KindMenuController extends BaseController
             $zone = $form->getData();
             $this->kindMenuService->create($zone);
 
-            return $this->response(data: $kindMenu, context: ['view']);
+            return $this->response(data: $kindMenu, context: ['view'], status: Response::HTTP_CREATED);
         }
 
-        return $this->response(errors: $this->getErrorsFromForm($form), status: 401);
+        return $this->response(errors: $this->getErrorsFromForm($form), status: Response::HTTP_UNAUTHORIZED);
     }
 
     /**
@@ -72,7 +71,7 @@ class KindMenuController extends BaseController
     #[OA\Patch(summary: 'Update existed KindMenu')]
     #[OA\RequestBody(required: true, content: new OA\JsonContent(ref: new Model(type: KindMenuType::class)))]
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_OK,
         description: 'Update existed KindMenu',
         content: new OA\JsonContent(
             type: 'array',
@@ -102,7 +101,7 @@ class KindMenuController extends BaseController
             return $this->response(data: $kindMenu, context: ['view']);
         }
 
-        return $this->response(errors: $this->getErrorsFromForm($form), status: 401);
+        return $this->response(errors: $this->getErrorsFromForm($form), status: Response::HTTP_UNAUTHORIZED);
     }
 
     #[Route(name: 'show_all_kind_menus', methods: ['GET'])]
@@ -111,7 +110,7 @@ class KindMenuController extends BaseController
         new OA\Parameter(name: 'limit', in: 'query', required: false, schema: new OA\Schema(type: 'int', example: 1))
     ])]
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_OK,
         description: 'Get paginated list of KindMenus',
         content: new OA\JsonContent(
             type: 'array',
@@ -146,7 +145,7 @@ class KindMenuController extends BaseController
     #[Route('/{id}', name: 'show_one_kind_menu', methods: ['GET'])]
     #[OA\Get(summary: 'Get KindMenu by id')]
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_OK,
         description: 'Get KindMenu by id',
         content: new OA\JsonContent(
             type: 'array',
@@ -170,7 +169,7 @@ class KindMenuController extends BaseController
     #[Route('/{id}', name: 'delete_kind_menu', methods: ['DELETE'])]
     #[OA\Delete(summary: 'Delete KindMenu by id')]
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_NO_CONTENT,
         description: 'Delete KindMenu by id',
         content: new OA\JsonContent(
             type: 'array',
@@ -192,6 +191,6 @@ class KindMenuController extends BaseController
         $entityManager->remove($kindMenu);
         $entityManager->flush();
 
-        return $this->response();
+        return $this->response(status: Response::HTTP_NO_CONTENT);
     }
 }

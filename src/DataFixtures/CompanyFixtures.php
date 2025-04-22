@@ -10,12 +10,13 @@ use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 class CompanyFixtures extends Fixture implements FixtureGroupInterface
 {
     public const COMPANY_REFERENCE = 'company';
+    public const COMPANY_ALIAS = 'best_burgers';
 
 
     public function load(ObjectManager $manager): void
     {
         $company = new Company();
-        $company->setAlias('best_burgers');
+        $company->setAlias(self::COMPANY_ALIAS);
         $company->setLogo('logo.jpg');
         $company->translate('en')->setName('Best Burgers');
         $company->translate('de')->setName('Am bestens Burgers');

@@ -3,7 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\City;
-use App\Entity\Company;
 use App\Entity\Country;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -14,11 +13,12 @@ class CityFixtures extends Fixture implements FixtureGroupInterface, DependentFi
 {
     public const CITY_REFERENCE = 'city';
 
+    public const CITY_ALIAS = 'potsdam';
 
     public function load(ObjectManager $manager): void
     {
         $cities = [
-            "potsdam" => [
+            self::CITY_ALIAS => [
                 'en' => 'Potsdam',
                 'de' => 'Potsdam',
             ],

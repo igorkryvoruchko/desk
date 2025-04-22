@@ -3,18 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\MenuItem;
-use App\Form\KindMenuType;
 use App\Form\MenuItemType;
 use App\Service\MenuItemService;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Attributes as OA;
+use Symfony\Component\HttpFoundation\Response;
 
 #[Route('/menu-item')]
 #[OA\Tag(name: 'MenuItem')]
@@ -31,7 +31,7 @@ class MenuItemController extends BaseController
     #[OA\Post(summary: 'Create new MenuItem')]
     #[OA\RequestBody(required: true, content: new OA\JsonContent(ref: new Model(type: MenuItemType::class)))]
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_CREATED,
         description: 'Create new MenuItem',
         content: new OA\JsonContent(
             type: 'array',
@@ -57,10 +57,10 @@ class MenuItemController extends BaseController
             $zone = $form->getData();
             $this->menuItemService->create($menuItem);
 
-            return $this->response(data: $menuItem, context: ['view']);
+            return $this->response(data: $menuItem, context: ['view'], status: Response::HTTP_CREATED);
         }
 
-        return $this->response(errors: $this->getErrorsFromForm($form), status: 401);
+        return $this->response(errors: $this->getErrorsFromForm($form), status: Response::HTTP_UNAUTHORIZED);
     }
 
     /**
@@ -71,7 +71,7 @@ class MenuItemController extends BaseController
     #[OA\Patch(summary: 'Update existed MenuItem')]
     #[OA\RequestBody(required: true, content: new OA\JsonContent(ref: new Model(type: MenuItemType::class)))]
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_OK,
         description: 'Update existed MenuItem',
         content: new OA\JsonContent(
             type: 'array',
@@ -101,7 +101,7 @@ class MenuItemController extends BaseController
             return $this->response(data: $menuItem, context: ['view']);
         }
 
-        return $this->response(errors: $this->getErrorsFromForm($form), status: 401);
+        return $this->response(errors: $this->getErrorsFromForm($form), status: Response::HTTP_UNAUTHORIZED);
     }
 
     #[Route(name: 'show_all_menu_items', methods: ['GET'])]
@@ -110,7 +110,7 @@ class MenuItemController extends BaseController
         new OA\Parameter(name: 'limit', in: 'query', required: false, schema: new OA\Schema(type: 'int', example: 1))
     ])]
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_OK,
         description: 'Get paginated list of MenuItems',
         content: new OA\JsonContent(
             type: 'array',
@@ -145,7 +145,7 @@ class MenuItemController extends BaseController
     #[Route('/{id}', name: 'show_one_menu_item', methods: ['GET'])]
     #[OA\Get(summary: 'Get MenuItem by id')]
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_OK,
         description: 'Get MenuItem by id',
         content: new OA\JsonContent(
             type: 'array',
@@ -169,7 +169,7 @@ class MenuItemController extends BaseController
     #[Route('/{id}', name: 'delete_menu_item', methods: ['DELETE'])]
     #[OA\Delete(summary: 'Delete MenuItem by id')]
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_NO_CONTENT,
         description: 'Delete MenuItem by id',
         content: new OA\JsonContent(
             type: 'array',
@@ -191,6 +191,6 @@ class MenuItemController extends BaseController
         $entityManager->remove($menuItem);
         $entityManager->flush();
 
-        return $this->response();
+        return $this->response(status: Response::HTTP_NO_CONTENT);
     }
 }
