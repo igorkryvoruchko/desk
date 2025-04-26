@@ -2,18 +2,22 @@
 
 namespace App\Entity;
 
+use App\Entity\Contract\SoftDeletableInterface;
 use App\Repository\KindMenuRepository;
+use App\Trait\SoftDeletableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Trait\TranslatableDirectionTrait;
 use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Gedmo\Mapping\Annotation as Gedmo;
 
+#[Gedmo\SoftDeleteable(fieldName: "deletedAt", timeAware: false)]
 #[ORM\Entity(repositoryClass: KindMenuRepository::class)]
-class KindMenu implements TranslatableInterface
+class KindMenu implements TranslatableInterface, SoftDeletableInterface
 {
-    use TranslatableDirectionTrait;
+    use TranslatableDirectionTrait, SoftDeletableTrait;
 
     #[Groups(['view'])]
     #[ORM\Id]

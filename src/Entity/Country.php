@@ -2,18 +2,22 @@
 
 namespace App\Entity;
 
+use App\Entity\Contract\SoftDeletableInterface;
 use App\Repository\CountryRepository;
+use App\Trait\SoftDeletableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
 use App\Trait\TranslatableDirectionTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Gedmo\Mapping\Annotation as Gedmo;
 
+#[Gedmo\SoftDeleteable(fieldName: "deletedAt", timeAware: false)]
 #[ORM\Entity(repositoryClass: CountryRepository::class)]
-class Country implements TranslatableInterface
+class Country implements TranslatableInterface, SoftDeletableInterface
 {
-    use TranslatableDirectionTrait;
+    use TranslatableDirectionTrait, SoftDeletableTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
