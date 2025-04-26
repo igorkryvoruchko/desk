@@ -2,17 +2,23 @@
 
 namespace App\Entity;
 
+use App\Entity\Contract\SoftDeletableInterface;
 use App\Repository\TableRepository;
+use App\Trait\SoftDeletableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Gedmo\Mapping\Annotation as Gedmo;
 
+#[Gedmo\SoftDeleteable(fieldName: "deletedAt", timeAware: false)]
 #[ORM\Entity(repositoryClass: TableRepository::class)]
 #[ORM\Table(name: '`table`')]
-class Table
+class Table implements SoftDeletableInterface
 {
+    use SoftDeletableTrait;
+
     #[Groups(['view'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]

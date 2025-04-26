@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use App\Entity\Contract\SoftDeletableInterface;
 use App\Repository\MenuItemRepository;
+use App\Trait\SoftDeletableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,16 +12,18 @@ use App\Trait\TranslatableDirectionTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Gedmo\Mapping\Annotation as Gedmo;
 
+#[Gedmo\SoftDeleteable(fieldName: "deletedAt", timeAware: false)]
 #[ORM\Entity(repositoryClass: MenuItemRepository::class)]
 #[UniqueEntity(
     fields: ['alias', 'kindMenu'],
     message: 'This alias is already in use on that KindMenu.',
     errorPath: 'alias',
 )]
-class MenuItem implements TranslatableInterface
+class MenuItem implements TranslatableInterface, SoftDeletableInterface
 {
-    use TranslatableDirectionTrait;
+    use TranslatableDirectionTrait, SoftDeletableTrait;
 
     #[Groups(['view'])]
     #[ORM\Id]
