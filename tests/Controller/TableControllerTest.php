@@ -34,18 +34,21 @@ class TableControllerTest extends AbstractWebTestCase
     /** @test */
     public function testCreateTable(): void
     {
-        $this->client->request('POST', '/api/en/table',
+        $this->client->request(
+            method: 'POST', 
+            uri: '/api/en/table',
             content: json_encode([
                 "number"        => $this->tableNumber,
                 "zone"   => $this->zoneId,
                 "seatsCount"    => 4,
             ])
         );
-        $response = $this->decodeResponse();
         
         $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
-        $this->assertEquals($this->tableNumber, $response['data']['number']);
+
+        $table = $this->decodeResponse();
+        $this->assertEquals($this->tableNumber, $table['data']['number']);
     }
 
     /** @test */
@@ -53,39 +56,43 @@ class TableControllerTest extends AbstractWebTestCase
     {
         $newNumber = 3;
         
-        $this->client->request('PATCH', '/api/en/table/' . $this->tableId,
+        $this->client->request(
+            method: 'PATCH', 
+            uri: '/api/en/table/' . $this->tableId,
             content: json_encode([
                 "number" => $newNumber,
             ])
         );
-        $response = $this->decodeResponse();
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertEquals($newNumber, $response['data']['number']);
+
+        $table = $this->decodeResponse();
+        $this->assertEquals($newNumber, $table['data']['number']);
     }
 
     /** @test */
     public function testGetAllTables()
     {
         $this->client->request('GET', '/api/en/table');
-        $response = $this->decodeResponse();
         
         $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertGreaterThan(0, count($response['data']));
+
+        $tables = $this->decodeResponse();
+        $this->assertGreaterThan(0, count($tables['data']));
     }
 
     /** @test */
     public function testGetOneTable()
     {
         $this->client->request('GET', '/api/en/table/' . $this->tableId);
-
-        $response = $this->decodeResponse();
         
         $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertEquals(TableFixtures::TABLE_NUMBER, $response['data']['number']);
+
+        $table = $this->decodeResponse();
+        $this->assertEquals(TableFixtures::TABLE_NUMBER, $table['data']['number']);
     }
 
     /** @test */

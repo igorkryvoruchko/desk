@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\City;
 use App\Entity\Company;
 use App\Entity\Restaurant;
+use App\Entity\Translation\RestaurantTranslation;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -26,13 +27,21 @@ class RestaurantFixtures extends Fixture implements FixtureGroupInterface, Depen
         $restaurant->setAddress('Grossbeerenstr. 1'); 
         $restaurant->setType('Fast Food');
         $restaurant->setPostalCode('14467');
-        $restaurant->translate('en')->setName('Best Burgers Potsdam');
-        $restaurant->translate('de')->setName('Am besten Burgers Potsdam');
-        $restaurant->translate('en')->setDescription('The best burgers in Potsdam');
-        $restaurant->translate('de')->setDescription('Die besten Burger in Potsdam');
+
+        $translate = new RestaurantTranslation();
+        $translate->setName('Best Burgers Potsdam');
+        $translate->setDescription('The best burgers in Potsdam');
+        $translate->setLocale('en');
+
+        $translateDe = new RestaurantTranslation();
+        $translateDe->setName('Am besten Burgers Potsdam');
+        $translateDe->setDescription('Die besten Burger in Potsdam');
+        $translateDe->setLocale('de');
+
+        $restaurant->addTranslation($translate);
+        $restaurant->addTranslation($translateDe);
 
         $manager->persist($restaurant);
-        $restaurant->mergeNewTranslations();
         $manager->flush();
         
         $this->addReference(self::RESTAURANT_REFERENCE, $restaurant);

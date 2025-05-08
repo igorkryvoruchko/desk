@@ -16,10 +16,11 @@ class CityControllerTest extends AbstractWebTestCase
     public function testGetAllCities()
     {
         $this->client->request('GET', '/api/en/city');
-        $responce = json_decode($this->client->getResponse()->getContent(), true);
         
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertGreaterThan(0, count($responce['data']));
+
+        $cities = $this->decodeResponse();
+        $this->assertGreaterThan(0, count($cities['data']));
+        $this->assertArrayHasKey('name', $cities['data'][0]['translations']['en']);
     }
 }

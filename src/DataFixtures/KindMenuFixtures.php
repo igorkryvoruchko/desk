@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\KindMenu;
 use App\Entity\Restaurant;
+use App\Entity\Translation\KindMenuTranslation;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -21,13 +22,21 @@ class KindMenuFixtures extends Fixture implements FixtureGroupInterface, Depende
         $kindMenu->setAlias(self::KIND_MENU_ALIAS);
         $kindMenu->setIsActive(true);
         $kindMenu->setRestaurant($this->getReference(RestaurantFixtures::RESTAURANT_REFERENCE, Restaurant::class));
-        $kindMenu->translate('en')->setName('Burgers');
-        $kindMenu->translate('de')->setName('Die Burger');
-        $kindMenu->translate('en')->setDescription('Burgers');
-        $kindMenu->translate('de')->setDescription('Die Burger');
+
+        $translation = new KindMenuTranslation();
+        $translation->setName('Burgers');
+        $translation->setDescription('Burgers');
+        $translation->setLocale('en');
+
+        $translationDe = new KindMenuTranslation();
+        $translationDe->setName('Die Burger');
+        $translationDe->setDescription('Die Burger');
+        $translationDe->setLocale('de');
+
+        $kindMenu->addTranslation($translation);
+        $kindMenu->addTranslation($translationDe);
 
         $manager->persist($kindMenu);
-        $kindMenu->mergeNewTranslations();
         $manager->flush();
         
         $this->addReference(self::KIND_MENU_REFERENCE, $kindMenu);

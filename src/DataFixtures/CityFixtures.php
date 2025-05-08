@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\City;
 use App\Entity\Country;
+use App\Entity\Translation\CityTranslation;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -90,14 +91,21 @@ class CityFixtures extends Fixture implements FixtureGroupInterface, DependentFi
 
         foreach ($cities as $alias => $cityData) {
             $city = new City();
-            $city->setCountry($this->getReference(CountryFixtures::COUNTRY_REFERENCE, Country::class));
-            $city->setAlias($alias);
-            $city->translate('en')->setName($cityData['en']);
-            $city->translate('de')->setName($cityData['de']);
+            $city->setAlias($alias)
+                ->setCountry($this->getReference(CountryFixtures::COUNTRY_REFERENCE, Country::class));
+
+            $translation = new CityTranslation();
+            $translation->setLocale('en')->setName($cityData['en']);
+            
+            $translationDe = new CityTranslation();
+            $translationDe->setLocale('de')->setName($cityData['de']);
+            
+            $city->addTranslation($translation);
+            $city->addTranslation($translationDe);
+
             $this->addReference(self::CITY_REFERENCE . "_". $alias, $city);
 
             $manager->persist($city);
-            $city->mergeNewTranslations();
         }
         
         $manager->flush();

@@ -2,15 +2,17 @@
 
 namespace App\Entity\Translation;
 
-use App\Trait\TranslationDirectionTrait;
+use App\Entity\City;
+use App\Entity\Contract\TranslationInterface;
+use App\Trait\TranslationTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Knp\DoctrineBehaviors\Contract\Entity\TranslationInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity]
 class CityTranslation implements TranslationInterface
 {
-    use TranslationDirectionTrait;
+use TranslationTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -19,6 +21,10 @@ class CityTranslation implements TranslationInterface
     #[ORM\Column(length: 255)]
     #[Groups(['view'])]
     private ?string $name = null;
+
+    #[ORM\ManyToOne(inversedBy: 'translations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?City $translatable = null;
 
     public function getId(): ?int
     {

@@ -9,7 +9,6 @@
         "ext-iconv": "*",
         "doctrine/doctrine-fixtures-bundle": "^4.0",
         "doctrine/doctrine-migrations-bundle": "^3.0",
-        "knplabs/doctrine-behaviors": "dev-master",
         "lexik/jwt-authentication-bundle": "^2.20",
         "nelmio/api-doc-bundle": "^4.29",
         "nelmio/cors-bundle": "^2.4",

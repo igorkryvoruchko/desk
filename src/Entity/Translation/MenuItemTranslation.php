@@ -2,15 +2,16 @@
 
 namespace App\Entity\Translation;
 
-use App\Trait\TranslationDirectionTrait;
+use App\Trait\TranslationTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Knp\DoctrineBehaviors\Contract\Entity\TranslationInterface;
+use App\Entity\Contract\TranslationInterface;
+use App\Entity\MenuItem;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity]
 class MenuItemTranslation implements TranslationInterface
 {
-    use TranslationDirectionTrait;
+    use TranslationTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -23,6 +24,10 @@ class MenuItemTranslation implements TranslationInterface
     #[ORM\Column(length: 255)]
     #[Groups(['view'])]
     private ?string $description = null;
+
+    #[ORM\ManyToOne(inversedBy: 'translations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?MenuItem $translatable = null;
 
     public function getId(): ?int
     {

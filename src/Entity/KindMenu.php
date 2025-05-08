@@ -8,8 +8,9 @@ use App\Trait\SoftDeletableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Trait\TranslatableDirectionTrait;
-use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
+use App\Trait\TranslatableTrait;
+use App\Entity\Contract\TranslatableInterface;
+use App\Entity\Translation\KindMenuTranslation;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -17,7 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ORM\Entity(repositoryClass: KindMenuRepository::class)]
 class KindMenu implements TranslatableInterface, SoftDeletableInterface
 {
-    use TranslatableDirectionTrait, SoftDeletableTrait;
+    use TranslatableTrait, SoftDeletableTrait;
 
     #[Groups(['view'])]
     #[ORM\Id]
@@ -38,8 +39,12 @@ class KindMenu implements TranslatableInterface, SoftDeletableInterface
     #[ORM\Column]
     private ?bool $isActive = null;
 
+    /**
+     * @var Collection<int, KindMenuTranslation>
+     */
+    #[ORM\OneToMany(mappedBy: 'translatable', targetEntity: KindMenuTranslation::class, cascade: ['persist', 'remove'])]
     #[Groups(['view'])]
-    protected $translations;
+    private Collection $translations;
 
     /**
      * @var Collection<int, MenuItem>
@@ -50,6 +55,7 @@ class KindMenu implements TranslatableInterface, SoftDeletableInterface
     public function __construct()
     {
         $this->menuItems = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function getId(): ?int

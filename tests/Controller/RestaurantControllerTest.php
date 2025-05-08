@@ -42,7 +42,10 @@ class RestaurantControllerTest extends AbstractWebTestCase
     /** @test */
     public function testCreateRestaurant(): void
     {
-        $this->client->request('POST', '/api/en/restaurant',
+        $restaurantName = "TestRestaurant";
+        $this->client->request(
+            method: 'POST', 
+            uri: '/api/en/restaurant',
             content: json_encode([
                 "alias"        => $this->restaurantAlias,
                 "company"      => $this->companyId,
@@ -51,16 +54,17 @@ class RestaurantControllerTest extends AbstractWebTestCase
                 "city"         => $this->cityId,
                 "type"         => "BurgerRestaurant",
                 "translations" => [
-                    ["name" => "TestRestaurant",    "description" => "New Restaurant",   "locale" => "en"],
+                    ["name" => $restaurantName,    "description" => "New Restaurant",   "locale" => "en"],
                     ["name" => "TestRestaurant.DE", "description" => "Neu Restaurant",   "locale" => "de"]
                 ]
             ])
         );
-        $response = $this->decodeResponse();
         
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
-        $this->assertEquals($this->restaurantAlias, $response['data']['alias']);
+
+        $restaurant = $this->decodeResponse();
+        $this->assertEquals($this->restaurantAlias, $restaurant['data']['alias']);
+        $this->assertEquals($restaurantName, $restaurant['data']['translations']['en']['name']);
     }
 
     /** @test */
@@ -68,39 +72,40 @@ class RestaurantControllerTest extends AbstractWebTestCase
     {
         $newAlias = "test_restaurant_updated";
         
-        $this->client->request('PATCH', '/api/en/restaurant/' . $this->restaurantId,
+        $this->client->request(
+            method: 'PATCH', 
+            uri: '/api/en/restaurant/' . $this->restaurantId,
             content: json_encode([
                 "alias" => $newAlias,
             ])
         );
-        $response = $this->decodeResponse();
 
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertEquals($newAlias, $response['data']['alias']);
+
+        $restaurant = $this->decodeResponse();
+        $this->assertEquals($newAlias, $restaurant['data']['alias']);
     }
 
     /** @test */
     public function testGetAllRestaurant()
     {
         $this->client->request('GET', '/api/en/restaurant');
-        $response = $this->decodeResponse();
         
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertGreaterThan(0, count($response['data']));
+
+        $restaurants = $this->decodeResponse();
+        $this->assertGreaterThan(0, count($restaurants['data']));
     }
 
     /** @test */
     public function testGetOneRestaurant()
     {
         $this->client->request('GET', '/api/en/restaurant/' . $this->restaurantId);
-
-        $response = $this->decodeResponse();
         
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertEquals(RestaurantFixtures::RESTAURANT_ALIAS, $response['data']['alias']);
+
+        $restaurant = $this->decodeResponse();
+        $this->assertEquals(RestaurantFixtures::RESTAURANT_ALIAS, $restaurant['data']['alias']);
     }
 
     /** @test */
@@ -108,7 +113,6 @@ class RestaurantControllerTest extends AbstractWebTestCase
     {
         $this->client->request('DELETE', '/api/en/restaurant/' . $this->restaurantId);
 
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
     }
 }

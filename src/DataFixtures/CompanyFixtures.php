@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Company;
+use App\Entity\Translation\CompanyTranslation;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -16,13 +17,22 @@ class CompanyFixtures extends Fixture implements FixtureGroupInterface
     public function load(ObjectManager $manager): void
     {
         $company = new Company();
-        $company->setAlias(self::COMPANY_ALIAS);
-        $company->setLogo('logo.jpg');
-        $company->translate('en')->setName('Best Burgers');
-        $company->translate('de')->setName('Am bestens Burgers');
+        $company->setAlias(self::COMPANY_ALIAS)
+            ->setLogo('logo.jpg');
+
+        $translation = new CompanyTranslation();
+        $translation->setLocale('en')
+            ->setName('Best Burgers');
+        
+        $translationDe = new CompanyTranslation();
+        $translationDe->setLocale('de')
+            ->setName('Am bestens Burgers');
+        
+        
+        $company->addTranslation($translation);
+        $company->addTranslation($translationDe);
 
         $manager->persist($company);
-        $company->mergeNewTranslations();
         $manager->flush();
         
         $this->addReference(self::COMPANY_REFERENCE, $company);

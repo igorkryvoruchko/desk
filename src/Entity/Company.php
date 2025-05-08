@@ -3,21 +3,22 @@
 namespace App\Entity;
 
 use App\Entity\Contract\SoftDeletableInterface;
+use App\Entity\Contract\TranslatableInterface;
+use App\Entity\Translation\CompanyTranslation;
 use App\Repository\CompanyRepository;
 use App\Trait\SoftDeletableTrait;
-use App\Trait\TranslatableDirectionTrait;
+use App\Trait\TranslatableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 #[Gedmo\SoftDeleteable(fieldName: "deletedAt", timeAware: false)]
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
-class Company implements TranslatableInterface, SoftDeletableInterface
+class Company implements SoftDeletableInterface, TranslatableInterface
 {
-    use TranslatableDirectionTrait, SoftDeletableTrait;
+    use SoftDeletableTrait, TranslatableTrait;
     
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -33,9 +34,6 @@ class Company implements TranslatableInterface, SoftDeletableInterface
     #[Groups(['view'])]
     private ?string $logo = null;
 
-    #[Groups(['view'])]
-    protected $translations;
-
     /**
      * @var Collection<int, Restaurant>
      */
@@ -45,13 +43,22 @@ class Company implements TranslatableInterface, SoftDeletableInterface
     /**
      * @var Collection<int, User>
      */
-    #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class)]
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class, cascade: ['persist', 'remove'])]
     private Collection $user;
+
+    /**
+     * @var Collection<int, CompanyTranslation>
+     */
+    #[ORM\OneToMany(mappedBy: 'translatable', targetEntity: CompanyTranslation::class, cascade: ['persist', 'remove'])]
+    #[Groups(['view'])]
+    private Collection $translations;
+
 
     public function __construct()
     {
         $this->restaurants = new ArrayCollection();
         $this->user = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function getId(): ?int

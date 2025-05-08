@@ -2,7 +2,6 @@
 
 namespace App\Tests\Controller;
 
-use App\DataFixtures\CompanyFixtures;
 use App\DataFixtures\MenuItemFixtures;
 use App\DataFixtures\TableFixtures;
 use App\Entity\Order;
@@ -58,11 +57,11 @@ class OrderControllerTest extends AbstractWebTestCase
                 "timeFrom"      => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
             ])
         );
-        $responce = $this->decodeResponse();
         
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
-        $this->assertEquals($comment, $responce['data']['comment']);
+
+        $order = $this->decodeResponse();
+        $this->assertEquals($comment, $order['data']['comment']);
     }
 
     /** @test */
@@ -70,37 +69,40 @@ class OrderControllerTest extends AbstractWebTestCase
     {
         $newText = "text_updated";
         
-        $this->client->request('PATCH', '/api/en/order/' . $this->orderId,
+        $this->client->request(
+            method: 'PATCH',
+            uri: '/api/en/order/' . $this->orderId,
             content: json_encode([
                 "comment" => $newText,
             ])
         );
-        $responce = json_decode($this->client->getResponse()->getContent(), true);
 
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertEquals($newText, $responce['data']['comment']);
+
+        $order = $this->decodeResponse();
+        $this->assertEquals($newText, $order['data']['comment']);
     }
 
     /** @test */
     public function testGetAllOrders()
     {
         $this->client->request('GET', '/api/en/order');
-        $responce = $this->decodeResponse();
         
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertGreaterThan(0, count($responce['data']));
+
+        $orders = $this->decodeResponse();
+        $this->assertGreaterThan(0, count($orders['data']));
     }
 
     /** @test */
     public function testGetOneOrder()
     {
         $this->client->request('GET', '/api/en/order/' . $this->orderId);
-        $responce = json_decode($this->client->getResponse()->getContent(), true);
         
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+
+        $order = $this->decodeResponse();
+        $this->assertArrayHasKey('id', $order['data']);
     }
 
     /** @test */
@@ -108,7 +110,6 @@ class OrderControllerTest extends AbstractWebTestCase
     {
         $this->client->request('DELETE', '/api/en/order/' . $this->orderId);
 
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
     }
 }

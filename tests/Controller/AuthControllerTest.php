@@ -2,14 +2,10 @@
 
 namespace App\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\HttpFoundation\Response;
 
-class AuthControllerTest extends WebTestCase
+class AuthControllerTest extends AbstractWebTestCase
 {
-    private KernelBrowser $client;
-
     protected function setUp(): void
     {
         $this->client = static::createClient(server: ['CONTENT_TYPE' => 'application/json']);
@@ -17,49 +13,52 @@ class AuthControllerTest extends WebTestCase
 
     /** @test */
     public function testRegisterLoginAndAccessProtectedRoute(): void
-    {
+    { 
         $this->client->request('GET', '/api/en/city');
-        $cities = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertResponseIsSuccessful();
+        $cities = $this->decodeResponse();
         
-        // 1. Registration
-        $this->client->request('POST', '/api/en/signup', 
-        [],
-        [],
-        [],
-        json_encode([
+        $userData = [
             'name'     => 'testuser',
             'email'    => 'test@example.com',
             'password' => 'password123',
-            'city'     => $cities['data'][0]['id'] ?? null,
-        ])
-    );
+            'city'     => $cities['data'][0]['id'],
+        ];
+        // 1. Registration
+        $this->client->request(
+            method: 'POST', 
+            uri: '/api/en/signup', 
+            content: json_encode($userData)
+        );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
-        $user = json_decode($this->client->getResponse()->getContent(), true);
-        $this->assertEquals('test@example.com', $user['data']['user']['email']);
+        $registeredUser = $this->decodeResponse();
+        $this->assertEquals($userData['email'], $registeredUser['data']['user']['email']);
 
         // 2. Login
-        $this->client->request('POST', '/api/en/login_check', 
-        [],
-        [],
-        [],
-        json_encode([
-            'email'    => 'test@example.com',
-            'password' => 'password123',
-        ])
+        $this->client->request(
+            method: 'POST', 
+            uri: '/api/en/login_check', 
+            content: json_encode([
+                'email'    => $userData['email'],
+                'password' => $userData['password'],
+            ])
         );
 
         $this->assertResponseIsSuccessful();
-        $data = json_decode($this->client->getResponse()->getContent(), true);
-        $this->assertArrayHasKey('token', $data['data']);
+        $authenticatedUser = $this->decodeResponse();
+        $this->assertArrayHasKey('token', $authenticatedUser['data']);
 
-        $jwt = $data['data']['token'];
+        $jwt = $authenticatedUser['data']['token'];
 
         // 3. Access protected route
-        $this->client->request('GET', '/api/en/company', server: [
-            'HTTP_AUTHORIZATION' => 'Bearer ' . $jwt,
-        ]);
+        $this->client->request(
+            method: 'GET', 
+            uri: '/api/en/company', 
+            server: [
+                'HTTP_AUTHORIZATION' => 'Bearer ' . $jwt,
+            ]
+        );
 
         $this->assertResponseIsSuccessful();
     }

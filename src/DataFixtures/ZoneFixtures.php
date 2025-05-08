@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Restaurant;
+use App\Entity\Translation\ZoneTranslation;
 use App\Entity\Zone;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -21,11 +22,19 @@ class ZoneFixtures extends Fixture implements FixtureGroupInterface, DependentFi
         $zone = new Zone();
         $zone->setAlias(self::ZONE_ALIAS);
         $zone->setRestaurant($this->getReference(RestaurantFixtures::RESTAURANT_REFERENCE, Restaurant::class));
-        $zone->translate('en')->setName('Inside');
-        $zone->translate('de')->setName('Innen');
+
+        $translate = new ZoneTranslation();
+        $translate->setName('Inside');
+        $translate->setLocale('en');
+
+        $translateDe = new ZoneTranslation();
+        $translateDe->setName('Innen');
+        $translateDe->setLocale('de');
+
+        $zone->addTranslation($translate);
+        $zone->addTranslation($translateDe);
 
         $manager->persist($zone);
-        $zone->mergeNewTranslations();
         $manager->flush();
         
         $this->addReference(self::ZONE_REFERENCE, $zone);
