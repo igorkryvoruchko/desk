@@ -8,9 +8,10 @@ use App\Trait\SoftDeletableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Trait\TranslatableDirectionTrait;
+use App\Trait\TranslatableTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
+use App\Entity\Contract\TranslatableInterface;
+use App\Entity\Translation\MenuItemTranslation;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -23,7 +24,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 )]
 class MenuItem implements TranslatableInterface, SoftDeletableInterface
 {
-    use TranslatableDirectionTrait, SoftDeletableTrait;
+    use TranslatableTrait, SoftDeletableTrait;
 
     #[Groups(['view'])]
     #[ORM\Id]
@@ -47,8 +48,12 @@ class MenuItem implements TranslatableInterface, SoftDeletableInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
 
+    /**
+     * @var Collection<int, MenuItemTranslation>
+     */
+    #[ORM\OneToMany(mappedBy: 'translatable', targetEntity: MenuItemTranslation::class, cascade: ['persist', 'remove'])]
     #[Groups(['view'])]
-    protected $translations;
+    private Collection $translations;
 
     #[Groups(['view'])]
     #[ORM\Column]
@@ -67,6 +72,7 @@ class MenuItem implements TranslatableInterface, SoftDeletableInterface
     public function __construct()
     {
         $this->orders = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function getId(): ?int

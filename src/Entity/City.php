@@ -2,18 +2,19 @@
 
 namespace App\Entity;
 
+use App\Entity\Contract\TranslatableInterface;
+use App\Entity\Translation\CityTranslation;
 use App\Repository\CityRepository;
+use App\Trait\TranslatableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Trait\TranslatableDirectionTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
 
 #[ORM\Entity(repositoryClass: CityRepository::class)]
 class City implements TranslatableInterface
 {
-    use TranslatableDirectionTrait;
+    use TranslatableTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -30,8 +31,12 @@ class City implements TranslatableInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Country $country = null;
 
+    /**
+     * @var Collection<int, CityTranslation>
+     */
+    #[ORM\OneToMany(mappedBy: 'translatable', targetEntity: CityTranslation::class, cascade: ['persist', 'remove'])]
     #[Groups(['view'])]
-    protected $translations;
+    private Collection $translations;
 
     /**
      * @var Collection<int, User>
@@ -49,6 +54,7 @@ class City implements TranslatableInterface
     {
         $this->users = new ArrayCollection();
         $this->restaurants = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function getId(): ?int

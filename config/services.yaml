@@ -38,5 +38,11 @@ services:
     app.service.base:
         class: App\Service\BaseService
         arguments: [ "@doctrine.orm.entity_manager", "@serializer" ]
+
+    App\Serializer\TranslatableNormalizer:
+        tags:
+            # register the normalizer with a high priority (called earlier)
+            - { name: 'serializer.normalizer', priority: 500 }
+            
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

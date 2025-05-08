@@ -8,8 +8,9 @@ use App\Trait\SoftDeletableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
-use App\Trait\TranslatableDirectionTrait;
+use App\Entity\Contract\TranslatableInterface;
+use App\Entity\Translation\CountryTranslation;
+use App\Trait\TranslatableTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -17,7 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ORM\Entity(repositoryClass: CountryRepository::class)]
 class Country implements TranslatableInterface, SoftDeletableInterface
 {
-    use TranslatableDirectionTrait, SoftDeletableTrait;
+    use TranslatableTrait, SoftDeletableTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -35,12 +36,17 @@ class Country implements TranslatableInterface, SoftDeletableInterface
     #[ORM\OneToMany(mappedBy: 'country', targetEntity: City::class, orphanRemoval: true)]
     private Collection $cities;
 
+    /**
+     * @var Collection<int, CountryTranslation>
+     */
+    #[ORM\OneToMany(mappedBy: 'translatable', targetEntity: CountryTranslation::class, cascade: ['persist', 'remove'])]
     #[Groups(['view'])]
-    protected $translations;
+    private Collection $translations;
 
     public function __construct()
     {
         $this->cities = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function getId(): ?int

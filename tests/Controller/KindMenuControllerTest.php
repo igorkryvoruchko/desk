@@ -34,22 +34,24 @@ class KindMenuControllerTest extends AbstractWebTestCase
     /** @test */
     public function testCreateKindMenu(): void
     {
+        $testedName = 'TestRestaurant';
         $this->client->request('POST', '/api/en/kind-menu',
             content: json_encode([
                 "alias"        => $this->kindMenuAlias,
                 "restaurant"   => $this->restaurantId,
                 "isActive"   => true,
                 "translations" => [
-                    ["name" => "TestRestaurant",    "description" => "New Restaurant",   "locale" => "en"],
+                    ["name" => $testedName,         "description" => "New Restaurant",   "locale" => "en"],
                     ["name" => "TestRestaurant.DE", "description" => "Neu Restaurant",   "locale" => "de"]
                 ]
             ])
         );
-        $response = $this->decodeResponse();
         
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
-        $this->assertEquals($this->kindMenuAlias, $response['data']['alias']);
+
+        $kindMenu = $this->decodeResponse();
+        $this->assertEquals($this->kindMenuAlias, $kindMenu['data']['alias']);
+        $this->assertEquals($testedName, $kindMenu['data']['translations']['en']['name']);
     }
 
     /** @test */
@@ -62,22 +64,22 @@ class KindMenuControllerTest extends AbstractWebTestCase
                 "alias" => $newAlias,
             ])
         );
-        $response = $this->decodeResponse();
-
-        $this->assertResponseIsSuccessful();
+        
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertEquals($newAlias, $response['data']['alias']);
+
+        $kindMenu = $this->decodeResponse();
+        $this->assertEquals($newAlias, $kindMenu['data']['alias']);
     }
 
     /** @test */
     public function testGetAllKindMenu()
     {
         $this->client->request('GET', '/api/en/kind-menu');
-        $response = $this->decodeResponse();
         
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertGreaterThan(0, count($response['data']));
+
+        $kindMenus = $this->decodeResponse();
+        $this->assertGreaterThan(0, count($kindMenus['data']));
     }
 
     /** @test */
@@ -85,11 +87,11 @@ class KindMenuControllerTest extends AbstractWebTestCase
     {
         $this->client->request('GET', '/api/en/kind-menu/' . $this->kindMenuId);
 
-        $response = $this->decodeResponse();
-        
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertEquals(KindMenuFixtures::KIND_MENU_ALIAS, $response['data']['alias']);
+
+        $kindMenu = $this->decodeResponse();
+        $this->assertEquals(KindMenuFixtures::KIND_MENU_ALIAS, $kindMenu['data']['alias']);
+        $this->assertArrayHasKey('name', $kindMenu['data']['translations']['en']);
     }
 
     /** @test */
@@ -97,7 +99,6 @@ class KindMenuControllerTest extends AbstractWebTestCase
     {
         $this->client->request('DELETE', '/api/en/kind-menu/' . $this->kindMenuId);
 
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
     }
 }

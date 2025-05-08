@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
-use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
+use App\Entity\Contract\TranslatableInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 class BaseService
 {
@@ -21,17 +21,12 @@ class BaseService
     public function create(TranslatableInterface $entity): void
     {
         $this->entityManager->persist($entity);
-        $entity->mergeNewTranslations();
         $this->entityManager->flush();
     }
 
     
-    public function update(TranslatableInterface $entity, Collection $oldTranslations): void
+    public function update($entity, Collection $oldTranslations): void
     {
-        // $entity = $this->deleteTranslations(
-        //     $entity,
-        //     $oldTranslations
-        // );
         $translations = $entity->getTranslations();
 
         foreach ($oldTranslations as $oldTranslation) {
@@ -42,11 +37,7 @@ class BaseService
             }
         }
 
-        $this->entityManager->flush();
-
         $this->entityManager->persist($entity);
-        $entity->mergeNewTranslations();
-
         $this->entityManager->flush();
     }
 

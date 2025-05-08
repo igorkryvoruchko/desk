@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\KindMenu;
 use App\Entity\MenuItem;
+use App\Entity\Translation\MenuItemTranslation;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -21,17 +22,27 @@ class MenuItemFixtures extends Fixture implements FixtureGroupInterface, Depende
         $menuItem = new MenuItem();
         $menuItem->setAlias(self::MENU_ITEM_ALIAS);
         $menuItem->setKindMenu($this->getReference(KindMenuFixtures::KIND_MENU_REFERENCE, KindMenu::class));
-        $menuItem->translate('en')->setName('BigMak');
-        $menuItem->translate('de')->setName('BigMak');
-        $menuItem->translate('en')->setDescription('BigMak sandwich');
-        $menuItem->translate('de')->setDescription('BigMak sandwich');
+
+        $translation = new MenuItemTranslation();
+        $translation->setLocale('en');
+        $translation->setName('BigMak');
+        $translation->setDescription('BigMak sandwich');
+        
+
+        $translationDe = new MenuItemTranslation();
+        $translationDe->setLocale('de');
+        $translationDe->setName('BigMak');
+        $translationDe->setDescription('BigMak sandwich');
+
+        $menuItem->addTranslation($translation);
+        $menuItem->addTranslation($translationDe);
+
         $menuItem->setPrice(5.99);
         $menuItem->setSpecialPrice(4.99);
         $menuItem->setQuantity(10);
         $menuItem->setPhoto('bigmak.jpg');
 
         $manager->persist($menuItem);
-        $menuItem->mergeNewTranslations();
         $manager->flush();
         
         $this->addReference(self::MENU_ITEM_REFERENCE, $menuItem);

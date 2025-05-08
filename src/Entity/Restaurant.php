@@ -5,11 +5,12 @@ namespace App\Entity;
 use App\Entity\Contract\SoftDeletableInterface;
 use App\Repository\RestaurantRepository;
 use App\Trait\SoftDeletableTrait;
-use App\Trait\TranslatableDirectionTrait;
+use App\Trait\TranslatableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
+use App\Entity\Contract\TranslatableInterface;
+use App\Entity\Translation\RestaurantTranslation;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -17,7 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ORM\Entity(repositoryClass: RestaurantRepository::class)]
 class Restaurant implements TranslatableInterface, SoftDeletableInterface
 {
-    use TranslatableDirectionTrait, SoftDeletableTrait;
+    use TranslatableTrait, SoftDeletableTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -29,8 +30,12 @@ class Restaurant implements TranslatableInterface, SoftDeletableInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Company $company = null;
 
+    /**
+     * @var Collection<int, RestaurantTranslation>
+     */
+    #[ORM\OneToMany(mappedBy: 'translatable', targetEntity: RestaurantTranslation::class, cascade: ['persist', 'remove'])]
     #[Groups(['view'])]
-    protected $translations;
+    private Collection $translations;
 
     #[Groups(['view'])]
     #[ORM\Column(length: 255)]
@@ -67,6 +72,7 @@ class Restaurant implements TranslatableInterface, SoftDeletableInterface
     {
         $this->zones = new ArrayCollection();
         $this->kindMenus = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function getId(): ?int

@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Country;
+use App\Entity\Translation\CountryTranslation;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -16,11 +17,19 @@ class CountryFixtures extends Fixture implements FixtureGroupInterface
     {
         $country = new Country();
         $country->setAlias('deutschland');
-        $country->translate('en')->setName('Germany');
-        $country->translate('de')->setName('Deutschland');
+
+        $translation = new CountryTranslation();
+        $translation->setName('Germany');
+        $translation->setLocale('en');
+
+        $translationDe = new CountryTranslation();
+        $translationDe->setName('Deutschland');
+        $translationDe->setLocale('de');
+
+        $country->addTranslation($translation);
+        $country->addTranslation($translationDe);
 
         $manager->persist($country);
-        $country->mergeNewTranslations();
         $manager->flush();
         
         $this->addReference(self::COUNTRY_REFERENCE, $country);

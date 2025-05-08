@@ -34,6 +34,7 @@ class MenuItemControllerTest extends AbstractWebTestCase
     /** @test */
     public function testCreateMenuItem(): void
     {
+        $testedName = 'TestMenuItem';
         $this->client->request('POST', '/api/en/menu-item',
             content: json_encode([
                 "alias"        => $this->menuItemAlias,
@@ -43,16 +44,17 @@ class MenuItemControllerTest extends AbstractWebTestCase
                 "price"        => 5.99,
                 "specialPrice" => 4.99,
                 "translations" => [
-                    ["name" => "TestMenuItem",    "description" => "New MenuItem",   "locale" => "en"],
+                    ["name" => $testedName,       "description" => "New MenuItem",   "locale" => "en"],
                     ["name" => "TestMenuItem.DE", "description" => "Neu MenuItem",   "locale" => "de"]
                 ]
             ])
         );
-        $response = $this->decodeResponse();
         
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
-        $this->assertEquals($this->menuItemAlias, $response['data']['alias']);
+
+        $menuItem = $this->decodeResponse();
+        $this->assertEquals($this->menuItemAlias, $menuItem['data']['alias']);
+        $this->assertEquals($testedName, $menuItem['data']['translations']['en']['name']);
     }
 
     /** @test */
@@ -65,22 +67,22 @@ class MenuItemControllerTest extends AbstractWebTestCase
                 "alias" => $newAlias,
             ])
         );
-        $response = $this->decodeResponse();
-
-        $this->assertResponseIsSuccessful();
+        
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertEquals($newAlias, $response['data']['alias']);
+
+        $menuItem = $this->decodeResponse();
+        $this->assertEquals($newAlias, $menuItem['data']['alias']);
     }
 
     /** @test */
     public function testGetAllMenuItem()
     {
         $this->client->request('GET', '/api/en/menu-item');
-        $response = $this->decodeResponse();
         
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertGreaterThan(0, count($response['data']));
+
+        $menuItems = $this->decodeResponse();
+        $this->assertGreaterThan(0, count($menuItems['data']));
     }
 
     /** @test */
@@ -88,11 +90,11 @@ class MenuItemControllerTest extends AbstractWebTestCase
     {
         $this->client->request('GET', '/api/en/menu-item/' . $this->menuItemId);
 
-        $response = $this->decodeResponse();
-        
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertEquals(MenuItemFixtures::MENU_ITEM_ALIAS, $response['data']['alias']);
+
+        $menuItem = $this->decodeResponse();
+        $this->assertEquals(MenuItemFixtures::MENU_ITEM_ALIAS, $menuItem['data']['alias']);
+        $this->assertArrayHasKey('name', $menuItem['data']['translations']['en']);
     }
 
     /** @test */
@@ -100,7 +102,6 @@ class MenuItemControllerTest extends AbstractWebTestCase
     {
         $this->client->request('DELETE', '/api/en/menu-item/' . $this->menuItemId);
 
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
     }
 }

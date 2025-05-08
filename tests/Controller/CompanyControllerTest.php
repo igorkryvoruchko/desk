@@ -25,21 +25,23 @@ class CompanyControllerTest extends AbstractWebTestCase
     public function testCreateCompany(): void
     {
         $companyAlias = "test_company";
+        $testedName = "TEST COMPANY";
         $this->client->request('POST', '/api/en/company',
             content: json_encode([
                 "alias"        => $companyAlias,
                 "logo"         => "foto.jpg",
                 "translations" => [
-                    ["name" => "TEST COMPANY",    "locale" => "en"],
+                    ["name" => $testedName,    "locale" => "en"],
                     ["name" => "TEST FIRMA.DE",   "locale" => "de"]
                 ]
             ])
         );
-        $responce = $this->decodeResponse();
+
+        $company = $this->decodeResponse();
         
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
-        $this->assertEquals($companyAlias, $responce['data']['alias']);
+        $this->assertEquals($companyAlias, $company['data']['alias']);
+        $this->assertEquals($testedName, $company['data']['translations']['en']['name']);
     }
 
     /** @test */
@@ -47,38 +49,41 @@ class CompanyControllerTest extends AbstractWebTestCase
     {
         $newAlias = "test_updated";
         
-        $this->client->request('PATCH', '/api/en/company/' . $this->companyId,
+        $this->client->request(
+            method: 'PATCH', 
+            uri: '/api/en/company/' . $this->companyId,
             content: json_encode([
                 "alias" => $newAlias,
             ])
         );
-        $responce = json_decode($this->client->getResponse()->getContent(), true);
 
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertEquals($newAlias, $responce['data']['alias']);
+
+        $company = $this->decodeResponse();
+        $this->assertEquals($newAlias, $company['data']['alias']);
     }
 
     /** @test */
     public function testGetAllCompanies()
     {
         $this->client->request('GET', '/api/en/company');
-        $responce = json_decode($this->client->getResponse()->getContent(), true);
         
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertGreaterThan(0, count($responce['data']));
+
+        $companies = $this->decodeResponse();
+        $this->assertGreaterThan(0, count($companies['data']));
     }
 
     /** @test */
     public function testGetOneCompany()
     {
         $this->client->request('GET', '/api/en/company/' . $this->companyId);
-        $responce = json_decode($this->client->getResponse()->getContent(), true);
         
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertEquals(CompanyFixtures::COMPANY_ALIAS, $responce['data']['alias']);
+
+        $company = $this->decodeResponse();
+        $this->assertEquals(CompanyFixtures::COMPANY_ALIAS, $company['data']['alias']);
+        $this->assertArrayHasKey('name', $company['data']['translations']['en']);
     }
 
     /** @test */
@@ -86,7 +91,6 @@ class CompanyControllerTest extends AbstractWebTestCase
     {
         $this->client->request('DELETE', '/api/en/company/' . $this->companyId);
 
-        $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
     }
 }
